@@ -1,5 +1,7 @@
+"use client";
 import { BiUserPlus } from "react-icons/bi";
 import Table from "./components/Table";
+import Form from "./components/Form";
 
 const Home = () => {
   return (
@@ -15,8 +17,10 @@ const Home = () => {
               </span>
             </button>
           </div>
-
-          {/*collapsable form */}
+        </div>
+        {/*collapsable form */}
+        <div className="container mx-auto py-5">
+          <Form />
         </div>
         {/*table */}
         <div className="container mx-auto">

@@ -1,5 +1,5 @@
 import connectMongo from "../../../src/app/database/connection";
-import { getUsers } from "../../../src/app/database/controller";
+import { getUsers, postUser, putUser, deleteUser } from "../../../src/app/database/controller";
 
 export default async function handle(req, res) {
   connectMongo().catch(() => res.status(405).json({ error: "Error in the Connection" }));
@@ -12,13 +12,13 @@ export default async function handle(req, res) {
       getUsers(req, res);
       break;
     case "POST":
-      res.status(200).json({ method, name: "POST Request" });
+      postUser(req, res);
       break;
     case "PUT":
-      res.status(200).json({ method, name: "PUT Request" });
+      putUser(req, res);
       break;
     case "DELETE":
-      res.status(200).json({ method, name: "DELETE Request" });
+      deleteUser(req, res);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);

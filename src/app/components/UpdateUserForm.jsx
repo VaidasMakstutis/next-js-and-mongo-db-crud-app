@@ -1,26 +1,30 @@
 "use client";
-import { useReducer } from "react";
 import { BiBrush } from "react-icons/bi";
-import Success from "./Success";
-import NotSuccess from "./NotSuccess";
+import { useQuery, useMutation, useQueryClient } from "react-query";
+import { getUser, getUsers, updateUser } from "../../../lib/helper";
 
-const formReducer = (state, event) => {
-  return {
-    ...state,
-    [event.target.name]: event.target.value
-  };
-};
+const UpdateUserForm = ({ formId, formData, setFormData }) => {
+  const queryClient = useQueryClient();
+  const { isLoading, isError, data, error } = useQuery(["users", formId], () => getUser(formId));
+  const updateMutation = useMutation(newData => updateUser(formId, newData), {
+    onSuccess: async data => {
+      // queryClient.setQueryData('users', (old) => [data])
+      queryClient.prefetchQuery("users", getUsers);
+    }
+  });
 
-const UpdateUserForm = () => {
-  const [formData, setFormData] = useReducer(formReducer, {});
+  if (isLoading) return <h2>Loading...!</h2>;
+  if (isError) return <h2>Error</h2>;
 
-  const handleSubmit = e => {
+  const { name, avatar, salary, date, email, status } = data;
+  const [firstname, lastname] = name ? name.split(" ") : formData;
+
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (Object.keys(formData).length == 0) return console.log("No Form Data!");
-    console.log(formData);
+    let userName = `${formData.firstname ?? firstname} ${formData.lastname ?? lastname}`;
+    let updated = Object.assign({}, data, formData, { name: userName });
+    await updateMutation.mutate(updated);
   };
-
-  if (Object.keys(formData).length > 0) return <NotSuccess message={"Data Added"} />;
 
   return (
     <form className="grid lg:grid-cols-2 w-4/6 gap-4" onSubmit={handleSubmit}>
@@ -28,6 +32,7 @@ const UpdateUserForm = () => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={firstname}
           name="firstname"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="FirstName"
@@ -37,6 +42,7 @@ const UpdateUserForm = () => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={lastname}
           name="lastname"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="LastName"
@@ -46,6 +52,7 @@ const UpdateUserForm = () => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={email}
           name="email"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="Email"
@@ -55,19 +62,28 @@ const UpdateUserForm = () => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={salary}
           name="salary"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="Salary"
         />
       </div>
       <div className="input-type">
-        <input type="date" onChange={setFormData} name="date" className="border px-5 py-3 focus:outline-none rounded-md" placeholder="Salary" />
+        <input
+          type="date"
+          onChange={setFormData}
+          defaultValue={date}
+          name="date"
+          className="border px-5 py-3 focus:outline-none rounded-md"
+          placeholder="Salary"
+        />
       </div>
 
       <div className="flex gap-10 items-center">
         <div className="form-check">
           <input
             type="radio"
+            defaultChecked={status == "Active"}
             onChange={setFormData}
             value="Active"
             id="radioDefault1"
@@ -81,6 +97,7 @@ const UpdateUserForm = () => {
         <div className="form-check">
           <input
             type="radio"
+            defaultChecked={status !== "Active"}
             onChange={setFormData}
             value="Inactive"
             id="radioDefault2"

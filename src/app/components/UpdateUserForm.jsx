@@ -7,13 +7,19 @@ import { useQuery } from "react-query";
 import { getUser } from "../../../lib/helper";
 
 const UpdateUserForm = ({ formId, formData, setFormData }) => {
+  const { isLoading, isError, data, error } = useQuery(["users", formId], () => getUser(formId));
+
+  if (isLoading) return <h2>Loading...!</h2>;
+  if (isError) return <h2>Error</h2>;
+
+  const { name, avatar, salary, date, email, status } = data;
+  const [firstname, lastname] = name ? name.split(" ") : formData;
+
   const handleSubmit = e => {
     e.preventDefault();
     if (Object.keys(formData).length == 0) return console.log("No Form Data!");
     console.log(formData);
   };
-
-  if (Object.keys(formData).length > 0) return <NotSuccess message={"Data Added"} />;
 
   return (
     <form className="grid lg:grid-cols-2 w-4/6 gap-4" onSubmit={handleSubmit}>
@@ -21,6 +27,7 @@ const UpdateUserForm = ({ formId, formData, setFormData }) => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={firstname}
           name="firstname"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="FirstName"
@@ -30,6 +37,7 @@ const UpdateUserForm = ({ formId, formData, setFormData }) => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={lastname}
           name="lastname"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="LastName"
@@ -39,6 +47,7 @@ const UpdateUserForm = ({ formId, formData, setFormData }) => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={email}
           name="email"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="Email"
@@ -48,19 +57,28 @@ const UpdateUserForm = ({ formId, formData, setFormData }) => {
         <input
           type="text"
           onChange={setFormData}
+          defaultValue={salary}
           name="salary"
           className="border w-full px-5 py-3 focus:outline-none rounded-md"
           placeholder="Salary"
         />
       </div>
       <div className="input-type">
-        <input type="date" onChange={setFormData} name="date" className="border px-5 py-3 focus:outline-none rounded-md" placeholder="Salary" />
+        <input
+          type="date"
+          onChange={setFormData}
+          defaultValue={date}
+          name="date"
+          className="border px-5 py-3 focus:outline-none rounded-md"
+          placeholder="Salary"
+        />
       </div>
 
       <div className="flex gap-10 items-center">
         <div className="form-check">
           <input
             type="radio"
+            defaultChecked={status == "Active"}
             onChange={setFormData}
             value="Active"
             id="radioDefault1"
@@ -74,6 +92,7 @@ const UpdateUserForm = ({ formId, formData, setFormData }) => {
         <div className="form-check">
           <input
             type="radio"
+            defaultChecked={status !== "Active"}
             onChange={setFormData}
             value="Inactive"
             id="radioDefault2"

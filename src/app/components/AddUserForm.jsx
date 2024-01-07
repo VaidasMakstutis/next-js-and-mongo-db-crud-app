@@ -1,21 +1,12 @@
 "use client";
-import { useReducer } from "react";
 import { BiPlus } from "react-icons/bi";
 import Success from "./Success";
 import NotSuccess from "./NotSuccess";
 import { useQueryClient, useMutation } from "react-query";
 import { addUser, getUsers } from "../../../lib/helper";
 
-const formReducer = (state, event) => {
-  return {
-    ...state,
-    [event.target.name]: event.target.value
-  };
-};
-
-const AddUserForm = () => {
+const AddUserForm = ({ formData, setFormData }) => {
   const queryClient = useQueryClient();
-  const [formData, setFormData] = useReducer(formReducer, {});
   const addMutation = useMutation(addUser, {
     onSuccess: () => {
       queryClient.prefetchQuery("users", getUsers);

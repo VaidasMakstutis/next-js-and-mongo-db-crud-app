@@ -1,19 +1,12 @@
 "use client";
-import { useReducer } from "react";
 import { BiBrush } from "react-icons/bi";
 import Success from "./Success";
 import NotSuccess from "./NotSuccess";
+import { useReducer } from "react";
+import { useQuery } from "react-query";
+import { getUser } from "../../../lib/helper";
 
-const formReducer = (state, event) => {
-  return {
-    ...state,
-    [event.target.name]: event.target.value
-  };
-};
-
-const UpdateUserForm = () => {
-  const [formData, setFormData] = useReducer(formReducer, {});
-
+const UpdateUserForm = ({ formId, formData, setFormData }) => {
   const handleSubmit = e => {
     e.preventDefault();
     if (Object.keys(formData).length == 0) return console.log("No Form Data!");

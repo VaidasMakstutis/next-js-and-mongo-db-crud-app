@@ -1,8 +1,5 @@
 "use client";
 import { BiBrush } from "react-icons/bi";
-import Success from "./Success";
-import NotSuccess from "./NotSuccess";
-import { useReducer } from "react";
 import { useQuery } from "react-query";
 import { getUser } from "../../../lib/helper";
 

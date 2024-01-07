@@ -1,15 +1,17 @@
 "use client";
 import { BiUserPlus } from "react-icons/bi";
-import { useState } from "react";
 import Head from "next/head";
 import Table from "../src/app/components/Table";
 import Form from "../src/app/components/Form";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleChangeAction } from "../redux/reducer";
 
 const Home = () => {
-  const [visible, setVisible] = useState(false);
+  const visible = useSelector(state => state.app.client.toggleForm);
+  const dispatch = useDispatch();
 
   const handleAddEmployee = () => {
-    setVisible(!visible);
+    dispatch(toggleChangeAction());
   };
 
   return (
